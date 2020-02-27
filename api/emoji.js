@@ -3,13 +3,17 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 
 export async function handler ({ queryStringParameters }, context) {
-  const { text, emoji, emojiEmpty = ':black_square:' } = queryStringParameters;
+  let { text, emoji, emojiEmpty } = queryStringParameters;
 
   if(!text || !emoji) {
     return {
       statusCode: 500,
       body: 'You should specify the "text" and "emoji" query parameters'
     }
+  }
+
+  if(!emojiEmpty || !emojiEmpty.length) {
+    emojiEmpty =':black_square:';
   }
 
   const { data } = await axios.get(`http://www.network-science.de/ascii/ascii.php?TEXT=${text}&x=50&y=8&FONT=banner&RICH=no&FORM=left&STRE=no&WIDT=80`);
