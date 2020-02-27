@@ -1,0 +1,3 @@
+[build]
+  functions = "api-build"
+  command = "npm run build:lambda"
