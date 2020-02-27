@@ -3,16 +3,197 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap">
     <title>Text to Slack Emoji</title>
+    <style>
+      html {
+        font-family: 'Fira Code', monospace;
+        font-size: 1.4vw;
+      }
+      * { box-sizing: border-box; }
+      main {
+        margin: 1vw;
+      }
+
+      form {
+        display: flex;
+        width: 100%;
+        flex-flow: column wrap;
+      }
+
+      .inputs__block {
+        position: relative;
+        display: flex;
+        flex: 0 1 auto;
+        margin: 1vw 0;
+      }
+
+      .output {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        align-items: center;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px 0 10px 15px;
+        font-weight: 400;
+        font-size: 1.4vw;
+        color: #377D6A;
+        background: #efefef;
+        border: 0;
+        border-radius: 3px;
+        outline: 0;
+      }
+
+      label {
+        color: white;
+        font-size: 1.4vw;
+        flex: 1 0 auto;
+        display: inline-block;
+        padding: 1vw 1.5vw;
+        text-shadow: 0 1px 0 rgba(19, 74, 70, 0.4);
+        background-color: rgba(var(--pure-material-primary-rgb, 33, 150, 243, 0.6));
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+      }
+
+      textarea {
+        width: 100%;
+        margin-top: 2vh;
+        height: 60vh;
+      }
+
+      button {
+          max-width: 500px;
+          position: relative;
+          display: inline-block;
+          box-sizing: border-box;
+          border: none;
+          border-radius: 4px;
+          padding: 1.6vw;
+          min-width: 64px;
+          vertical-align: middle;
+          text-align: center;
+          text-overflow: ellipsis;
+          text-transform: uppercase;
+          color: rgb(255, 255, 255);
+          background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+          box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+          font-size: 1.4vw;
+          font-weight: 500;
+          line-height: 36px;
+          overflow: hidden;
+          outline: none;
+          cursor: pointer;
+          transition: box-shadow 0.2s;
+      }
+
+      button::-moz-focus-inner {
+          border: none;
+      }
+
+      /* Overlay */
+      button::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+          opacity: 0;
+          transition: opacity 0.2s;
+      }
+
+      /* Ripple */
+      button::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          border-radius: 50%;
+          padding: 50%;
+          width: 32px; /* Safari */
+          height: 32px; /* Safari */
+          background-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(1);
+          transition: opacity 1s, transform 0.5s;
+      }
+
+      /* Hover, Focus */
+      button:hover,
+      button:focus {
+          box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+      }
+
+      button:hover::before {
+          opacity: 0.08;
+      }
+
+      button:focus::before {
+          opacity: 0.24;
+      }
+
+      button:hover:focus::before {
+          opacity: 0.3;
+      }
+
+      /* Active */
+      button:active {
+          box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+      }
+
+      button:active::after {
+          opacity: 0.32;
+          transform: translate(-50%, -50%) scale(0);
+          transition: transform 0s;
+      }
+
+      /* Disabled */
+      button:disabled {
+          color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+          background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.12);
+          box-shadow: none;
+          cursor: initial;
+      }
+
+      button:disabled::before {
+          opacity: 0;
+      }
+
+      button:disabled::after {
+          opacity: 0;
+      }
+    </style>
   </head>
   <body>
     <main>
       <h1>Convert text to Slack's emoji</h1>
 
-      <input type="text" placeholder="Type what you want converted here" />
+      <form class="inputs" onsubmit="return handleSubmit()">
+        <div class="inputs__block">
+          <label for="textInput">Text: </label>
+          <input id="textInput" name="text" type="text" class="text" required placeholder="Type what you want converted here" />
+        </div>
+        <div class="inputs__block">
+          <label for="emojiInput">Emoji: </label>
+          <input id="emojiInput" name="emoji" type="text" class="text" required placeholder="Type what emoji should be the main" />
+        </div>
+        <div class="inputs__block">
+          <label for="emojiEmptyInput">Negative-space emoji: </label>
+          <input id="emojiEmptyInput" name="emojiEmpty" type="text" class="text" required placeholder="Type what emoji should be the blank space" />
+        </div>
 
-      <div>
-        <pre id="output"></pre>
+        <button onClick="handleSubmit()">Generate!</button>
+      </form>
+
+      <div class="output">
+        <button onClick="copyToClipboard()">Copy to clipboard</button>
+        <textarea id="output"></textarea>
       </div>
     </main>
   </body>
@@ -20,19 +201,34 @@
   <script>
     let timer;
 
-    const handleInput = async target => {
-      const { value } = target;
+    const encode = ({value}) => encodeURIComponent(value);
 
-      const parsedValue = encodeURIComponent(value.replace(" ", "+"));
+    const handleSubmit = (event) => {
+      const text = encode(document.querySelector('#textInput'));
+      const emoji = encode(document.querySelector('#emojiInput'));
+      const emojiEmpty = encode(document.querySelector('#emojiEmptyInput'));
 
-      const response = await fetch(`/emoji?text=${parsedValue}`);
+      (async () => {
+        const response = await fetch(`/api/emoji?text=${text}&emoji=${emoji}&emojiEmpty=${emojiEmpty}`);
 
-      console.log(await response.json());
+        const ascii = await response.text();
+
+        document.querySelector('#output').textContent = ascii;
+      })();
+
+      event && event.preventDefault();
+      return false;
     };
 
-    document.querySelector("input").addEventListener("input", ({ target }) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => handleInput(target), 500);
-    });
+    function copyToClipboard() {
+      const copyText = document.getElementById("output");
+
+      /* Select the text field */
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+      /* Copy the text inside the text field */
+      document.execCommand("copy");
+    }
   </script>
 </html>

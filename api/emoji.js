@@ -3,12 +3,12 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 
 export async function handler ({ queryStringParameters }, context) {
-  const { text, emoji, emojiEmpty } = queryStringParameters;
+  const { text, emoji, emojiEmpty = ':black_square:' } = queryStringParameters;
 
-  if(!text || !emoji || !emojiEmpty) {
+  if(!text || !emoji) {
     return {
       statusCode: 500,
-      body: 'You should specify the "text", "emoji" and "emojiEmpty" query parameters'
+      body: 'You should specify the "text" and "emoji" query parameters'
     }
   }
 
