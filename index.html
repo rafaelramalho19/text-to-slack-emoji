@@ -199,8 +199,6 @@
   </body>
 
   <script>
-    let timer;
-
     const encode = ({value}) => encodeURIComponent(value);
 
     const handleSubmit = (event) => {
@@ -209,7 +207,8 @@
       const emojiEmpty = encode(document.querySelector('#emojiEmptyInput'));
 
       (async () => {
-        const response = await fetch(`/api/emoji?text=${text}&emoji=${emoji}&emojiEmpty=${emojiEmpty}`);
+        const apiURL = '/.netlify/functions/emoji';
+        const response = await fetch(`${apiURL}?text=${text}&emoji=${emoji}&emojiEmpty=${emojiEmpty}`);
 
         const ascii = await response.text();
 
