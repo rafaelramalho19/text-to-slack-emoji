@@ -1,9 +1,11 @@
 "use strict";
 const $ = require("cheerio");
 
-module.exports.handler = (req, res) => {
-  const { text } = req.query;
-  console.log(text);
-  req.text(text);
-  //   req.json(newValue);
+exports.handler = function(event, context, callback) {
+  const { queryStringParameters } = event;
+  console.log(queryStringParameters);
+  callback(null, {
+    statusCode: 200,
+    body: queryStringParameters
+  });
 };
