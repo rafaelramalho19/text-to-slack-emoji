@@ -25,11 +25,9 @@
 
       const parsedValue = encodeURIComponent(value.replace(" ", "+"));
 
-      const response = await fetch(
-        `https://www.network-science.de/ascii/ascii.php?TEXT=${parsedValue}&x=50&y=8&FONT=banner&RICH=no&FORM=left&STRE=no&WIDT=80`
-      );
+      const response = await fetch(`/emoji?text=${parsedValue}`);
 
-      console.log(response);
+      console.log(await response.json());
     };
 
     document.querySelector("input").addEventListener("input", ({ target }) => {
