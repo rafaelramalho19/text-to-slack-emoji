@@ -2,8 +2,8 @@
 const cheerio = require("cheerio");
 const axios = require("axios");
 
-export async function handler ({ queryStringParameters }, context) {
-  let { text, emoji, emojiEmpty } = queryStringParameters;
+export async function handler ({ queryStringParameters }) {
+  let { text, emoji, emojiEmpty, width = 80 } = queryStringParameters;
 
   if(!text || !emoji) {
     return {
@@ -12,11 +12,11 @@ export async function handler ({ queryStringParameters }, context) {
     }
   }
 
-  if(!emojiEmpty || !emojiEmpty.length) {
+  if(!emojiEmpty || emojiEmpty.length < 2) {
     emojiEmpty =':black_square:';
   }
 
-  const { data } = await axios.get(`http://www.network-science.de/ascii/ascii.php?TEXT=${text}&x=50&y=8&FONT=banner&RICH=no&FORM=left&STRE=no&WIDT=80`);
+  const { data } = await axios.get(`http://www.network-science.de/ascii/ascii.php?TEXT=${text}&x=50&y=8&FONT=banner&RICH=no&FORM=left&STRE=no&WIDT=${width}`);
 
   const $ = cheerio.load(data);
 
