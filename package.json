@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/rafaelramalho19/text-to-slack-emoji#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "express": "^4.17.1",
     "netlify-lambda": "^1.6.3",
